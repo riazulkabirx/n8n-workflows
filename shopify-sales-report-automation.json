@@ -1,0 +1,204 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \{\
+  "nodes": [\
+    \{\
+      "parameters": \{\
+        "promptType": "define",\
+        "text": "=You are an intelligent assistant tasked with generating a daily summary of recent e-commerce orders.\\n\\nYour Goal and Required Tool Usage:\\n\\nRetrieve Data from Supabase (Critical Tool Calls):\\n\\nTo get order item details, you MUST call the tool named get orders.\\nTo get order item details, you MUST call the tool named Send Gmail Summary.\\n\\nAfter calling this tool, process the data they return to identify all necessary information for the summary.\\n\\nIdentify Recent Orders:\\n\\nFrom the data retrieved by the Get Orders tool, specifically filter for all orders that have been placed within the last 01 week. Today is \{\{ $now \}\}\\nGenerate Summary and Details (Strict Plain Text Formatting Required):\\n\\nUsing the data from the get orders, create:\\nA concise summary of these recent orders, including the total number of new orders and the total revenue generated.\\nA detailed list of each individual new order. For each order, include its ID, placement date/time, the client's name, the total value, and a clear list of all products included in that order (product name, quantity, price per item).\\nCRITICAL PLAIN TEXT FORMATTING INSTRUCTIONS:\\nSeparate all lines and paragraphs with clear newlines.\\nUse double newlines to create distinct paragraph breaks for readability.\\nDo NOT use any special characters for bolding, italics, headings, or bullet points (e.g., no *, #, **). Just use plain text.\\nIndent lists using spaces for clarity if possible.\\nEnsure the output is a single, readable block of plain text suitable for an email body.\\n\\nSend Email (Critical Tool Call):\\n\\nTo send the generated summary and detailed list via email, you MUST call the tool named Send Gmail Summary.\\nThe email subject should be \\"Weekly Order Summary - Last one week\\".\\nThe email body will contain the generated plain text content.\\nExample of Desired Email Body Structure (Plain Text - Italian, Rome Timezone):\\n\\nWeekly Order Summary (Last 01 week)\\n\\nTotal New Orders: [Number of orders]\\nTotal Revenue: [Total revenue amount]\\n\\n---------------------------------------\\n\\nNew Order Details:\\n\\nOrder ID: [Order ID 1]\\nDate: 25/05/2025 20:03 CEST\\nCustomer: [Customer Name 1]\\nTotal Value: [Total Value 1]\\nItems:\\n- [Product Name A] (x[Quantity A]) - [Price A]\\n- [Product Name B] (x[Quantity B]) - [Price B]\\n\\nOrder ID: [Order ID 2]\\nDate: 25/05/2025 20:03 CEST\\nCustomer: [Customer Name 2]\\nTotal Value: [Total Value 2]\\nItems:\\n- [Product Name X] (x[Quantity X]) - [Price X]\\n- [Product Name Y] (x[Quantity Y]) - [Price Y]\\n\\n... (continues for all new orders in a similar format)",\
+        "options": \{\}\
+      \},\
+      "id": "17fb5b58-9a82-4451-9edd-cedd143d5c2e",\
+      "name": "AI Agent",\
+      "type": "@n8n/n8n-nodes-langchain.agent",\
+      "position": [\
+        -68,\
+        -20\
+      ],\
+      "typeVersion": 1.9\
+    \},\
+    \{\
+      "parameters": \{\
+        "descriptionType": "manual",\
+        "toolDescription": "Use this tool to send an email summary about the orders",\
+        "sendTo": "=\{\{ $json.toEmail \}\}",\
+        "subject": "=\{\{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') \}\}",\
+        "emailType": "text",\
+        "message": "=\{\{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') \}\}",\
+        "options": \{\
+          "appendAttribution": false\
+        \}\
+      \},\
+      "id": "bd806206-2d7b-4e16-bc42-26ce5ae8cae7",\
+      "name": "Send Gmail Summary",\
+      "type": "n8n-nodes-base.gmailTool",\
+      "position": [\
+        240,\
+        180\
+      ],\
+      "webhookId": "8b8d8a36-744d-4716-a6cf-8d6a3b6fa67a",\
+      "typeVersion": 2.1,\
+      "credentials": \{\
+        "gmailOAuth2": \{\
+          "id": "FjdVUlydWNxMTIYD",\
+          "name": "Gmail account"\
+        \}\
+      \}\
+    \},\
+    \{\
+      "parameters": \{\
+        "assignments": \{\
+          "assignments": [\
+            \{\
+              "id": "0376e8ed-6c68-4bcd-9913-73486ac3dd69",\
+              "name": "toEmail",\
+              "type": "string",\
+              "value": "riazulkabirx@gmail.com"\
+            \}\
+          ]\
+        \},\
+        "options": \{\}\
+      \},\
+      "id": "e6888d9f-de11-4243-b8e6-cf1a2dad505e",\
+      "name": "Set Sender Email",\
+      "type": "n8n-nodes-base.set",\
+      "position": [\
+        -320,\
+        -20\
+      ],\
+      "typeVersion": 3.4\
+    \},\
+    \{\
+      "parameters": \{\
+        "options": \{\}\
+      \},\
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",\
+      "typeVersion": 1,\
+      "position": [\
+        -100,\
+        200\
+      ],\
+      "id": "f94e969f-1373-4f94-ad54-c962aa7dd8b7",\
+      "name": "OpenRouter Chat Model",\
+      "credentials": \{\
+        "openRouterApi": \{\
+          "id": "zeELXgJABuLjokxP",\
+          "name": "OpenRouter account"\
+        \}\
+      \}\
+    \},\
+    \{\
+      "parameters": \{\
+        "authentication": "accessToken",\
+        "operation": "getAll",\
+        "returnAll": true,\
+        "options": \{\}\
+      \},\
+      "type": "n8n-nodes-base.shopifyTool",\
+      "typeVersion": 1,\
+      "position": [\
+        60,\
+        200\
+      ],\
+      "id": "5e7f7c6b-2605-4786-978f-3cd0030367ba",\
+      "name": "get orders",\
+      "credentials": \{\
+        "shopifyAccessTokenApi": \{\
+          "id": "bujkzrME0AqTX9C2",\
+          "name": "Shopify Access Token account"\
+        \}\
+      \}\
+    \},\
+    \{\
+      "parameters": \{\
+        "rule": \{\
+          "interval": [\
+            \{\
+              "triggerAtHour": 8\
+            \}\
+          ]\
+        \}\
+      \},\
+      "id": "b7de3a46-ee34-4e49-8a34-c4f06fc94788",\
+      "name": "Monday 8am",\
+      "type": "n8n-nodes-base.scheduleTrigger",\
+      "position": [\
+        -540,\
+        -20\
+      ],\
+      "typeVersion": 1.2\
+    \}\
+  ],\
+  "connections": \{\
+    "AI Agent": \{\
+      "main": [\
+        []\
+      ]\
+    \},\
+    "Send Gmail Summary": \{\
+      "ai_tool": [\
+        [\
+          \{\
+            "node": "AI Agent",\
+            "type": "ai_tool",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "Set Sender Email": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "AI Agent",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "OpenRouter Chat Model": \{\
+      "ai_languageModel": [\
+        [\
+          \{\
+            "node": "AI Agent",\
+            "type": "ai_languageModel",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "get orders": \{\
+      "ai_tool": [\
+        [\
+          \{\
+            "node": "AI Agent",\
+            "type": "ai_tool",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \},\
+    "Monday 8am": \{\
+      "main": [\
+        [\
+          \{\
+            "node": "Set Sender Email",\
+            "type": "main",\
+            "index": 0\
+          \}\
+        ]\
+      ]\
+    \}\
+  \},\
+  "pinData": \{\},\
+  "meta": \{\
+    "templateCredsSetupCompleted": true,\
+    "instanceId": "e265854fdcb6795e4b076ff3208c0a96ffb1ac2b45765fe4149cfea92b6e5b32"\
+  \}\
+\}}
