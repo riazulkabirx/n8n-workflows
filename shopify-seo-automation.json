@@ -1,0 +1,388 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "7f58e528-bcfb-4b73-abf1-42132e1fb3b5",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        540,
+        665
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"new_description\": \"The full rewritten HTML description goes here.\",\n  \"seo_keywords_used\": [\"keyword one\", \"keyword two\", \"keyword three\"]\n}"
+      },
+      "id": "a21bb1cc-bc9d-4e31-8044-27b7ec056687",
+      "name": "Structured Output Parser1",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        908,
+        760
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an SEO and e-commerce copywriting expert specializing in Shopify stores.\n\nI have a product with the following details:\n- Title: {{ $json.Title }}\n- Current Description: {{ $json['Current Description'] }}\n\nYour task is to perform the following two actions and return the result ONLY in a JSON format:\n1.  Identify 5-7 powerful, long-tail SEO keywords that are highly relevant to this product including default a keyword \"SEO_optimized\".\n2.  Rewrite the product description to be more compelling and human-readable, naturally weaving in the keywords you identified.\n\nYour output is JSON.\n\n==================\n\nBelow is an example for description structure: \n\n<h3>Step into Effortless Style & Comfort!</h3>\n<p>Tired of socks that slip, slide, and spoil your look? Discover the perfect blend of elegance and practicality with our <strong>Korean Embossed Floral Boat Socks</strong>. Designed for the style-conscious woman, these socks are your secret to flawless, all-day comfort, especially during warm spring and summer days. The delicate, embossed floral pattern adds a touch of sophisticated, feminine charm to any outfit.</p>\n<p>Crafted from a premium, ultra-soft fabric, these <strong>lightweight breathable ankle socks</strong> allow your feet to breathe, keeping them cool and dry from your morning coffee run to your evening stroll. The chic <strong>Korean style no-show socks</strong> design ensures they stay perfectly hidden in your favorite sneakers, loafers, or flats for a clean, polished look.</p>\n<br>\n<h4>Why You'll Love Them:</h4>\n<ul>\n  <li><strong>🌸 Elegant Embossed Design:</strong> Stand out with beautifully detailed <strong>embossed floral socks for women</strong>, offering a unique and subtle texture that elevates any look.</li>\n  <li><strong>🌬️ All-Day Breathability:</strong> The lightweight, airy fabric is perfect for keeping your feet comfortable and sweat-free, even on the hottest days.</li>\n  <li><strong>👟 Secure No-Slip Grip:</strong> Featuring a smart anti-slip silicone grip on the heel, our <strong>anti-slip cotton boat socks</strong> stay perfectly in place. No more annoying bunching or slipping!</li>\n  <li><strong>🎀 Truly Invisible Style:</strong> The ideal cut to stay hidden in your favorite low-profile shoes, making them the ultimate pair of <strong>cute summer ankle socks</strong>.</li>\n  <li><strong>🎨 Versatile Color Palette:</strong> Available in a range of gorgeous, soft colors designed to effortlessly complement your wardrobe.</li>\n</ul>\n<br>\n<p>Don't settle for ordinary. Elevate your essentials with a touch of Korean-inspired elegance. Add these must-have socks to your cart today and treat your feet to the comfort and style they deserve!</p>",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=YOU ARE A PROFESSIONAL E-COMMERCE COPYWRITER AI, SPECIALIZED IN WRITING HIGH-CONVERSION, BRAND-ALIGNED PRODUCT DESCRIPTIONS FOR SHOPIFY STORES."
+        }
+      },
+      "id": "54aa5a1a-3ced-4d60-9e50-de7f9bdc9b14",
+      "name": "shopify",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        760,
+        540
+      ],
+      "typeVersion": 1.8
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        665
+      ],
+      "id": "0f9c1b5c-f8cf-4ead-a507-7946ba51f9ab",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        788,
+        760
+      ],
+      "id": "782230dc-3909-4a0f-9ba2-019865b4ca43",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "DhTVAkJEfroGSzdi",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "12GLmhVRI5NvG_0uAimobwbFnNC0zdVn8w_ibW-onhys",
+          "mode": "list",
+          "cachedResultName": "n8n Testing",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12GLmhVRI5NvG_0uAimobwbFnNC0zdVn8w_ibW-onhys/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2006665056,
+          "mode": "list",
+          "cachedResultName": "SEO Description",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12GLmhVRI5NvG_0uAimobwbFnNC0zdVn8w_ibW-onhys/edit#gid=2006665056"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Product ID": "={{ $('Get row(s) in sheet').item.json['Product ID'] }}",
+            "Title": "={{ $('Get row(s) in sheet').item.json.Title }}",
+            "Current Description": "={{ $('Get row(s) in sheet').item.json['Current Description'] }}",
+            "SEO Updated?": "Yes",
+            "SEO Description": "={{ $json.output.new_description }}",
+            "Tags": "={{ $json.output.seo_keywords_used }}"
+          },
+          "matchingColumns": [
+            "Product ID"
+          ],
+          "schema": [
+            {
+              "id": "Product ID",
+              "displayName": "Product ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Current Description",
+              "displayName": "Current Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "SEO Description",
+              "displayName": "SEO Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tags",
+              "displayName": "Tags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "SEO Updated?",
+              "displayName": "SEO Updated?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "031e599b-c342-4cdd-a1f7-44ad95600174",
+      "name": "Append or update row in sheet1",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1136,
+        540
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fSexuunTwTMQeBiw",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12GLmhVRI5NvG_0uAimobwbFnNC0zdVn8w_ibW-onhys",
+          "mode": "list",
+          "cachedResultName": "n8n Testing",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12GLmhVRI5NvG_0uAimobwbFnNC0zdVn8w_ibW-onhys/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2006665056,
+          "mode": "list",
+          "cachedResultName": "SEO Description",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12GLmhVRI5NvG_0uAimobwbFnNC0zdVn8w_ibW-onhys/edit#gid=2006665056"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        100,
+        665
+      ],
+      "id": "013ed37f-4365-407e-9bd9-8890344fef6b",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "fSexuunTwTMQeBiw",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "accessToken",
+        "resource": "product",
+        "operation": "update",
+        "productId": "={{ $json['Product ID'] }}",
+        "updateFields": {
+          "body_html": "={{ $json['SEO Description'] }}",
+          "tags": "={{ $json.Tags }}"
+        }
+      },
+      "type": "n8n-nodes-base.shopify",
+      "typeVersion": 1,
+      "position": [
+        1356,
+        665
+      ],
+      "id": "8bd45f3b-62b5-4a29-8a29-363122182ebc",
+      "name": "Update a product",
+      "credentials": {
+        "shopifyAccessTokenApi": {
+          "id": "bujkzrME0AqTX9C2",
+          "name": "Shopify Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "43a89a53-6294-43a8-85de-e1eb8a78e9b2",
+              "leftValue": "={{ $json['SEO Updated?'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        665
+      ],
+      "id": "b7f2c9cb-8b69-4c2e-8ebb-ce2a69e813ee",
+      "name": "Filter"
+    }
+  ],
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "shopify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "shopify",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "shopify": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "shopify",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Update a product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a product": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e265854fdcb6795e4b076ff3208c0a96ffb1ac2b45765fe4149cfea92b6e5b32"
+  }
+}
